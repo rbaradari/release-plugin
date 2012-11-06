@@ -34,26 +34,25 @@ import hudson.Util;
 import hudson.ivy.IvyModuleSet;
 import hudson.matrix.MatrixRun;
 import hudson.maven.MavenModuleSet;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildBadgeAction;
 import hudson.model.BuildListener;
+import hudson.model.Item;
+import hudson.model.ParameterValue;
+import hudson.model.Result;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Cause;
 import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.model.Item;
 import hudson.model.Job;
 import hudson.model.ParameterDefinition;
-import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import hudson.model.ParametersDefinitionProperty;
 import hudson.model.PermalinkProjectAction;
 import hudson.model.PermalinkProjectAction.Permalink;
-import hudson.model.Result;
 import hudson.model.Run;
-import hudson.model.StringParameterValue;
 import hudson.plugins.release.promotion.ReleasePromotionCondition;
 import hudson.security.Permission;
 import hudson.security.PermissionGroup;
@@ -499,8 +498,6 @@ public class ReleaseWrapper extends BuildWrapper implements MatrixAggregatable {
 
     public class ReleaseAction implements Action, PermalinkProjectAction {
         private AbstractProject project;
-        private String releaseVersion;
-        private String developmentVersion;    
         
         public ReleaseAction(AbstractProject project) {
             this.project = project;
@@ -579,22 +576,6 @@ public class ReleaseWrapper extends BuildWrapper implements MatrixAggregatable {
             }
 
             return Collections.emptyList();
-        }
-        
-        public String getReleaseVersion() {
-            return releaseVersion;
-        }
-        
-        public void setReleaseVersion(String releaseVersion) {
-            this.releaseVersion = releaseVersion;
-        }
-        
-        public String getDevelopmentVersion() {
-            return developmentVersion;
-        }
-        
-        public void setDevelopmentVersion(String developmentVersion) {
-            this.developmentVersion = developmentVersion;
         }
 
         /**
@@ -697,15 +678,6 @@ public class ReleaseWrapper extends BuildWrapper implements MatrixAggregatable {
 	                ParameterValue value = d.createValue(req, jo);
 	                
 	                paramValues.add(d.createValue(req, jo));
-	            }
-            } else {
-	            // add version if specified
-	            if (releaseVersion != null && !"".equals(releaseVersion)) {
-	            	paramValues.add(new StringParameterValue("RELEASE_VERSION", releaseVersion));
-	            }
-	            
-	            if (developmentVersion != null && !"".equals(developmentVersion)) {
-	            	paramValues.add(new StringParameterValue("DEVELOPMENT_VERSION", developmentVersion));
 	            }
             }
             

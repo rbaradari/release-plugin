@@ -43,99 +43,92 @@
                         </j:forEach>
 				    </f:section>
                 </j:if>
-		    	<f:section title="${%Define release}">
-                    <j:if test="${it.parameterDefinitions == null || it.parameterDefinitions.isEmpty()}">
-                        Please configure your specific release parameters in the project config page as these
-                        hard coded parameters will be removed in a future release.
-                        <f:entry title="${%Release version}" help="/plugin/release/help-releaseVersion.html">
-                            <f:textbox name="releaseVersion" value="${it.releaseVersion}" />
-                        </f:entry>
-                        <f:entry title="${%Next development version}" help="/plugin/release/help-developmentVersion.html">
-                            <f:textbox name="developmentVersion" value="${it.developmentVersion}" />
-                        </f:entry>
-                    </j:if>
-                    <j:if test="${!it.parameterDefinitions.isEmpty()}">
+                <j:if test="${!it.parameterDefinitions.isEmpty()}">
+    		    	<f:section title="${%Define release}">
                         <j:forEach var="parameterDefinition" items="${it.parameterDefinitions}">
                             <st:include it="${parameterDefinition}"	page="${parameterDefinition.descriptor.valuePage}" />
                         </j:forEach>
-                    </j:if>
-		          <tr><td colspan="3"><f:submit value="${%Schedule Release Build}"/></td></tr>
-				</f:section>
+	       			</f:section>
+                </j:if>
+		        <tr><td colspan="3"><f:submit value="${%Schedule Release Build}"/></td></tr>
 			</f:form>
 			</td></tr>
 			<tr><td>
-			<f:section title="${%Previous release versions}">
-				<j:if test="${!it.previousReleaseVersions.isEmpty()}">
-					<script type="text/javascript">
-		         	function useReleaseParameters(releaseNo){
-		         		clearFields();
-		         		releaseParametersArray = $('release_'+releaseNo).getElementsBySelector('tr');
-		         		for(i=0; i&lt;releaseParametersArray.length; i++) {
-		         			if(typeof releaseParametersArray[i].getElementsBySelector('.setting-name')[0] != "undefined"){
-		         				nameElement = releaseParametersArray[i].getElementsBySelector('.setting-name')[0];
-		         				fieldName = nameElement.innerHTML;
-			         			valueElement = nameElement.next().firstDescendant();
-								setFieldValue(fieldName, valueElement);
-		    	     		}
-						}
-		         	}
-		         
-		         	function setFieldValue(pName, pValueElement){
-			         	inputElement = $$('form[action="submit"] input[value="'+pName+'"]')[0];     		
-		       			if(pValueElement.getAttribute('type') == "text"){
-			    	     	//Text field
-			         		fieldValue = pValueElement.getAttribute('value');
-		         			if(inputElement.next().tagName == "SELECT"){
-		    	     			clearChoice(pName);
-		         				inputElement.next('select').getElementsBySelector('option[value="'+fieldValue+'"]')[0].selected="selected";
-		         			}else{
-				         		inputElement.next('input').value=fieldValue;
-				         	}
-		    	     	}else if(pValueElement.getAttribute('type') == "checkbox"){
-			         		//Boolean parameter
-			         		fieldValue = pValueElement.getAttribute('checked');         		
-		         			if(fieldValue == null){
-		         				fieldValue = false;
-		         			}
-	         				inputElement.next('input').checked=fieldValue;
-		    	     	}else if(pValueElement.getAttribute('type') == "password"){
-		    	     		//Password parameters will be ignored
-			         		return;
-		    	     	}else if(pValueElement.tagName == "A"){
-		    	     		//File and run parameters will be ignored
-		    	     		return;
-		    	     	}
-		         	}
-		         	
-		         	function clearChoice(pName){
-		         		optionsArray = $$('form[action="submit"] input[value="'+pName+'"]')[0].next('select').getElementsBySelector('option');
-		         		optionsArray.each(function(item){
-							item.removeAttribute("selected");         		
-		         		});
-		         	}
-		         	
-		         	function clearFields(){
-		         		inputFields = $$('form[action="submit"] .setting-input');
-		         		inputFields.each(function(item) {
-						  item.clear();
-						});
-		         	}
-					</script>
-					<j:forEach var="b" items="${it.getPreviousReleaseBuilds()}">
-		            <tr>
-						<j:set var="recentParameters" value="${it.getParametersForBuild(b)}" />
-		            	<j:if test="${!recentParameters.isEmpty()}">
-		            		<td id="release_${b.number}" tooltip="${%Click to use build parameters}" onclick="javascript:useReleaseParameters(${b.number})">
-								<l:pane title="#${b.number} - ${it.getReleaseVersionForBuild(b)} - ${%Parameters}" width="3">
-									<j:forEach var="parameterValue" items="${recentParameters}">
-	                                    <st:include it="${parameterValue}" page="value.jelly" />
-	                                </j:forEach>
-								</l:pane>
-							</td>
-		            	</j:if>
-		            </tr>
-		          </j:forEach>
-		        </j:if>
+		    <f:section title="${%Previous release versions}">
+				<script type="text/javascript">
+	         	function useReleaseParameters(releaseNo){
+	         		clearFields();
+	         		releaseParametersArray = $('release_'+releaseNo).getElementsBySelector('tr');
+	         		for(i=0; i&lt;releaseParametersArray.length; i++) {
+	         			if(typeof releaseParametersArray[i].getElementsBySelector('.setting-name')[0] != "undefined"){
+	         				nameElement = releaseParametersArray[i].getElementsBySelector('.setting-name')[0];
+	         				fieldName = nameElement.innerHTML;
+		         			valueElement = nameElement.next().firstDescendant();
+							setFieldValue(fieldName, valueElement);
+	    	     		}
+					}
+	         	}
+	         
+	         	function setFieldValue(pName, pValueElement){
+		         	inputElement = $$('form[action="submit"] input[value="'+pName+'"]')[0];     		
+	       			if(pValueElement.getAttribute('type') == "text"){
+		    	     	//Text field
+		         		fieldValue = pValueElement.getAttribute('value');
+	         			if(inputElement.next().tagName == "SELECT"){
+	    	     			clearChoice(pName);
+	         				inputElement.next('select').getElementsBySelector('option[value="'+fieldValue+'"]')[0].selected="selected";
+	         			}else{
+			         		inputElement.next('input').value=fieldValue;
+			         	}
+	    	     	}else if(pValueElement.getAttribute('type') == "checkbox"){
+		         		//Boolean parameter
+		         		fieldValue = pValueElement.getAttribute('checked');         		
+	         			if(fieldValue == null){
+	         				fieldValue = false;
+	         			}
+         				inputElement.next('input').checked=fieldValue;
+	    	     	}else if(pValueElement.getAttribute('type') == "password"){
+	    	     		//Password parameters will be ignored
+		         		return;
+	    	     	}else if(pValueElement.tagName == "A"){
+	    	     		//File and run parameters will be ignored
+	    	     		return;
+	    	     	}
+	         	}
+	         	
+	         	function clearChoice(pName){
+	         		optionsArray = $$('form[action="submit"] input[value="'+pName+'"]')[0].next('select').getElementsBySelector('option');
+	         		optionsArray.each(function(item){
+						item.removeAttribute("selected");         		
+	         		});
+	         	}
+	         	
+	         	function clearFields(){
+	         		inputFields = $$('form[action="submit"] .setting-input');
+	         		inputFields.each(function(item) {
+					  item.clear();
+					});
+	         	}
+				</script>
+				<j:forEach var="b" items="${it.getPreviousReleaseBuilds()}">
+	            <tr>
+					<j:set var="recentParameters" value="${it.getParametersForBuild(b)}" />
+                    <j:if test="${recentParameters.isEmpty()}">
+                        <td id="release_${b.number}">
+                            <l:pane title="#${b.number} - ${it.getReleaseVersionForBuild(b)}" width="3" />
+					   </td>
+                	</j:if>
+                	<j:if test="${!recentParameters.isEmpty()}">
+                        <td id="release_${b.number}" tooltip="${%Click to use build parameters}" onclick="javascript:useReleaseParameters(${b.number})">
+                            <l:pane title="#${b.number} - ${it.getReleaseVersionForBuild(b)} - ${%Parameters}" width="3">
+                                <j:forEach var="parameterValue" items="${recentParameters}">
+                                    <st:include it="${parameterValue}" page="value.jelly" />
+                                </j:forEach>
+                    		</l:pane>
+					   </td>
+                	</j:if>
+	            </tr>
+	          </j:forEach>
 			</f:section>
 			</td></tr>
 		</table>
